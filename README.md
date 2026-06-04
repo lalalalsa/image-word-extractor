@@ -1,78 +1,90 @@
-# 图片英文单词提取工具
+# 图片英文单词提取工具 📝
 
-一个简单的本地 Web 项目：上传图片，提取其中的英文单词，并导出为一个单词一行的 `.txt` 文件。
+上传图片 → OCR 识别英文单词 → 导出为 `.txt` 文件。现代化界面，支持 API 和浏览器双引擎。
 
-## 功能
+## ✨ 功能
 
-- 支持多图片上传
-- OCR 可选择两种模式：
-  - API OCR：配置 API 后优先使用
-  - 浏览器 OCR：没有 API 或 API 失败时使用 Tesseract.js
-- 自动过滤中文、数字、标点，只保留英文单词
-- 支持人工编辑识别结果
-- 支持去重、排序、清空、导出 txt
+- 🖼️ **多图片上传**：点击或拖拽，支持 PNG / JPG / WebP
+- ☁️ **双引擎 OCR**：
+  - **API OCR**：调用大模型识别，速度快、精度高（默认适配小米 MiMo）
+  - **浏览器 OCR**：Tesseract.js 本地识别，无需 API Key
+  - **自动模式**：API 优先，失败自动回退浏览器 OCR
+- 🔍 **智能过滤**：自动去除中文、数字、标点，只保留纯英文单词
+- ✏️ **人工校对**：识别结果可在编辑区直接修改
+- 🔧 **实用工具**：去重（大小写不敏感）、排序（字母序）、导出 TXT
 
-## 直接打开使用
+## 🚀 快速开始
 
-双击打开 `index.html` 即可使用浏览器 OCR。
+### 方式一：浏览器 OCR（最简单）
 
-> 浏览器 OCR 使用 CDN 加载 Tesseract.js，需要联网。
+直接双击 `index.html`，上传图片即可识别。
 
-## Windows 应用模式
+> 浏览器 OCR 需要联网加载 Tesseract.js（CDN）。**API OCR 在此模式下不可用**，如需 API OCR 请用方式二。
 
-Windows 上可以直接双击：
+### 方式二：完整功能（推荐）
 
-```text
-启动图片单词提取工具.cmd
+双击 `启动图片单词提取工具.cmd`，自动启动本地服务并用 Edge 打开。
+
+或在终端手动启动：
+
+```bash
+node server.js
+# 访问 http://localhost:5177
 ```
 
-它会自动启动本地服务，并用 Edge 独立应用窗口打开页面。
+### 桌面快捷方式
 
-如果想创建桌面快捷方式，在 PowerShell 中运行：
+在 PowerShell 中运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\创建桌面快捷方式.ps1
 ```
 
-## 使用 API OCR
+## 🔑 配置 API OCR
 
-如果要使用 API OCR，请先启动本地服务：
+### 网页内配置（推荐）
+
+打开工具后，在页面顶部的 API 设置栏填入 Key，点击「保存」即可。设置会保存在浏览器中。
+
+### 环境变量
 
 ```bash
+# CMD
+set OCR_API_KEY=你的APIKey
+node server.js
+
+# PowerShell
+$env:OCR_API_KEY="你的APIKey"
 node server.js
 ```
 
-然后访问：
+默认 API 适配小米 MiMo：
 
-```text
-http://localhost:5177
 ```
-
-在网页里的 `API Key（可选）` 输入框填入 Key 后，选择 API OCR 或自动模式即可。
-
-默认 API 设置适配小米 MiMo 图片理解：
-
-```text
 API 地址：https://api.xiaomimimo.com/v1/chat/completions
 模型：mimo-v2.5
 ```
 
-也可以用环境变量作为默认 Key：
+可通过环境变量 `OCR_API_URL` 和 `OCR_MODEL` 自定义。
 
-```bash
-set OCR_API_KEY=你的APIKey
-set OCR_API_URL=https://api.xiaomimimo.com/v1/chat/completions
-set OCR_MODEL=mimo-v2.5
-node server.js
+## 🛠️ 技术栈
+
+- **前端**：原生 HTML + CSS + JavaScript（IIFE，无框架）
+- **浏览器 OCR**：[Tesseract.js v5](https://github.com/naptha/tesseract.js)（CDN）
+- **后端**：Node.js 原生 `http` 模块，端口 5177
+- **API 格式**：兼容 OpenAI Chat Completions 和小米 MiMo
+
+## 📁 项目结构
+
 ```
-
-PowerShell 示例：
-
-```powershell
-$env:OCR_API_KEY="你的APIKey"
-$env:OCR_API_URL="https://api.xiaomimimo.com/v1/chat/completions"
-$env:OCR_MODEL="mimo-v2.5"
-node server.js
+image-word-extractor/
+├── index.html              # 主页面
+├── styles.css              # 样式
+├── server.js               # Node 服务（API 代理 + 静态文件）
+├── js/
+│   └── main.js             # 核心逻辑
+├── start-app.ps1           # Windows 启动脚本
+├── 启动图片单词提取工具.cmd   # 双击启动入口
+├── 创建桌面快捷方式.ps1       # 快捷方式生成脚本
+└── README.md
 ```
-
-如果没有配置 `OCR_API_KEY`，或者 API 调用失败，页面会自动回退到浏览器 OCR。

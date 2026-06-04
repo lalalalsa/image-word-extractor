@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>图片英文单词提取工具</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="toolbar">
+      <div>
+        <h1>图片英文单词提取</h1>
+        <p>上传图片，识别英文单词，并导出为一行一个单词的 txt 文件。</p>
+      </div>
+      <label class="mode">
+        <span>OCR 模式</span>
+        <select id="ocrMode">
+          <option value="auto">自动：API 优先，失败后用浏览器 OCR</option>
+          <option value="api">只用 API OCR</option>
+          <option value="browser">只用浏览器 OCR</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel upload-panel">
+      <div class="api-settings">
+        <label class="api-key-field">
+          <span>API Key（可选）</span>
+          <input id="apiKeyInput" type="password" autocomplete="off" placeholder="填写后可使用 API OCR；不填则自动回退浏览器 OCR">
+        </label>
+        <label class="api-key-field">
+          <span>API 地址</span>
+          <input id="apiUrlInput" type="url" autocomplete="off" placeholder="https://api.xiaomimimo.com/v1/chat/completions">
+        </label>
+        <label class="api-key-field">
+          <span>模型</span>
+          <input id="apiModelInput" type="text" autocomplete="off" placeholder="mimo-v2.5">
+        </label>
+        <button id="toggleApiKeyBtn" type="button" class="secondary">显示</button>
+        <button id="saveApiKeyBtn" type="button">保存 API 设置</button>
+        <button id="clearApiKeyBtn" type="button" class="secondary">清除 API 设置</button>
+      </div>
+      <label id="dropZone" class="drop-zone">
+        <input id="fileInput" type="file" accept="image/*" multiple>
+        <strong>点击或拖拽图片到这里</strong>
+        <span>支持 png、jpg、jpeg、webp，可批量上传</span>
+      </label>
+      <div class="actions">
+        <button id="runBtn" type="button">开始识别</button>
+        <button id="dedupeBtn" type="button">去重</button>
+        <button id="sortBtn" type="button">排序</button>
+        <button id="downloadBtn" type="button">导出 TXT</button>
+        <button id="clearBtn" type="button" class="secondary">清空</button>
+      </div>
+      <div id="status" class="status">等待上传图片。</div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel">
+        <h2>图片</h2>
+        <div id="previewList" class="preview-list"></div>
+      </div>
+      <div class="panel result-panel">
+        <div class="result-head">
+          <h2>识别结果</h2>
+          <span id="wordCount">0 个单词</span>
+        </div>
+        <textarea id="resultText" spellcheck="false" placeholder="识别出的英文单词会显示在这里，可手动校对。"></textarea>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

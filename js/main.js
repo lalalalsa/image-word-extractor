@@ -170,6 +170,14 @@
 
   /* ===== OCR: API ===== */
   async function recognizeWithApi(file) {
+    // file:// 协议下 /api/ocr 不可用，给出明确提示
+    if (window.location.protocol === "file:") {
+      throw new Error(
+        "当前通过 file:// 打开，API OCR 不可用。" +
+        "请用「启动图片单词提取工具.cmd」启动，或切换到浏览器 OCR 模式。"
+      );
+    }
+
     var apiKey = apiKeyInput.value.trim();
     var apiUrl = apiUrlInput.value.trim();
     var model = apiModelInput.value.trim();
